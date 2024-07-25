@@ -11,7 +11,9 @@
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
 	},
 	"dependencies": {
+		"@ant-design/nextjs-registry": "^1.0.0",
 		"@tanstack/react-query": "^5.51.3",
+		"antd": "^5.19.3",
 		"axios": "^1.7.2",
 		"clsx": "^2.1.1",
 		"cookies-next": "^4.2.1",

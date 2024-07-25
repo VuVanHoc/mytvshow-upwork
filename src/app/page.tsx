@@ -1,25 +1,70 @@
+"use client";
+
+import { getTvShows } from "@/services/tv.service";
+import { useQuery } from "@tanstack/react-query";
+import { Card, Pagination, Skeleton } from "antd";
+import Image from "next/image";
+import { useState } from "react";
+
 export default function Home() {
-	const shows = Array(20).fill(0);
-	const characters = "abcdefghijklmnopqrstuvwxyz".split("");
+	// const characters = "abcdefghijklmnopqrstuvwxyz".split("");
+	const [searchQuery, setSearchQuery] = useState("");
+	const [getRequest, setRequest] = useState({
+		page: 1,
+		search: "",
+	});
+	const { data: shows, isPending } = useQuery({
+		queryKey: ["shows", getRequest],
+		queryFn: () => getTvShows(getRequest),
+	});
+
+	if (isPending) {
+		return (
+			<div className="mx-auto mt-4 grid w-[980px] grid-cols-4 gap-8">
+				{Array(16)
+					.fill(0)
+					.map((_, index) => (
+						<Card key={index}>
+							<Skeleton active className="" />
+						</Card>
+					))}
+			</div>
+		);
+	}
 	return (
 		<main className="mb-10">
 			<div className="h-10 w-full bg-[#7286A9]"></div>
 			<section className="mx-auto mt-4 w-[980px]">
 				<div className="flex items-center justify-between">
-					<h1 className="text-2xl">All Shows // {shows.length}</h1>
+					<h1 className="text-2xl">
+						All Shows //{" "}
+						<span className="text-gray-600">
+							{shows.total_results}
+						</span>
+					</h1>
 					<div>
 						<input
 							className="border px-4"
 							type="text"
 							name="search"
 							placeholder="Search..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
-						<button className="border border-blue-600 bg-blue-500 px-1 text-white">
+						<button
+							className="border border-blue-600 bg-blue-500 px-1 text-white"
+							onClick={() =>
+								setRequest({
+									...getRequest,
+									search: searchQuery,
+								})
+							}
+						>
 							Search
 						</button>
 					</div>
 				</div>
-				<div className="mt-4 flex gap-4 uppercase text-[#7286A9]">
+				{/* <div className="mt-4 flex gap-4 uppercase text-[#7286A9]">
 					{characters.map((character) => (
 						<p
 							key={character}
@@ -28,24 +73,48 @@ export default function Home() {
 							{character}
 						</p>
 					))}
-				</div>
+				</div> */}
 				<div className="mt-4 w-full border-b-[1px] border-gray-200"></div>
-				<div className="mt-10 grid grid-cols-5 gap-8">
-					{shows.map((show) => (
+				<div className="mt-10 grid grid-cols-4 gap-8">
+					{shows?.results?.length === 0 && <p>No results found</p>}
+					{shows?.results?.map((show: any) => (
 						<div key={show} className="group w-full cursor-pointer">
-							<div className="flex w-full items-center justify-center text-center group-hover:bg-[#7286A9] group-hover:text-white">
-								Title
+							<Image
+								width={320}
+								height={180}
+								src={`https://media.themoviedb.org/t/p/w320_and_h180_face${show.poster_path}`}
+								alt={show.original_name}
+								className="aspect-video w-full rounded-t-lg"
+							></Image>
+							<div className="w-full items-center justify-center rounded-b-lg bg-slate-100 p-1 text-left group-hover:bg-[#7286A9] group-hover:text-white">
+								<p className="w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold">
+									{show.original_name}
+								</p>
+								<div className="mt-2 flex items-start justify-between text-xs">
+									<p>
+										Votes: {show.vote_count}
+										<br />
+										Average: {show.vote_average}
+									</p>
+									<p>{show.first_air_date}</p>
+								</div>
 							</div>
-							<div className="aspect-video w-full border-[0.5px] border-gray-200"></div>
 						</div>
 					))}
 				</div>
-				<div className="mt-10 w-full border-b-[1px] border-gray-200"></div>
-				<div className="mx-auto mt-4 flex items-center justify-center gap-10">
-					<p>Page 1 of 141</p>
-					<button className="text-[#7286A9] underline">Next</button>
-					<button className="text-[#7286A9] underline">Last</button>
-				</div>
+				<div className="mb-8 mt-10 w-full border-b-[1px] border-gray-200"></div>
+				<Pagination
+					align="center"
+					showSizeChanger={false}
+					total={shows.total_results}
+					defaultCurrent={1}
+					pageSize={20}
+					current={getRequest.page}
+					onChange={(page) => setRequest({ ...getRequest, page })}
+					showTotal={(total, range) =>
+						`${range[0]}-${range[1]} of ${total} items`
+					}
+				/>
 			</section>
 		</main>
 	);
