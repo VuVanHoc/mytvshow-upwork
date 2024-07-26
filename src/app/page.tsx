@@ -32,8 +32,7 @@ export default function Home() {
 		);
 	}
 	return (
-		<main className="mb-10">
-			<div className="h-10 w-full bg-[#7286A9]"></div>
+		<main className="mb-10 pb-20">
 			<section className="mx-auto mt-4 w-[980px]">
 				<div className="flex items-center justify-between">
 					<h1 className="text-2xl">

@@ -24,7 +24,7 @@ export default function RootLayout({
 				<AppProvider>
 					<Header />
 					{children}
-					<footer className="bg-[#222222] text-white">
+					<footer className="fixed bottom-0 left-0 w-full bg-[#222222] text-white">
 						<div className="mx-auto flex h-10 w-[980px] max-w-[980px] items-center gap-4 text-xs">
 							<Link href={"/about"}>About</Link>
 							<Link href={"/blog"}>Blog</Link>

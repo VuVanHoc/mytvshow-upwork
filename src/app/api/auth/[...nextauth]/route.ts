@@ -1,8 +1,8 @@
+import { signInService } from "@/services/user.service";
 import { COOKIES } from "@/utils/constants";
 import { setCookie } from "cookies-next";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
 
 const handler = NextAuth({
 	providers: [
@@ -18,16 +18,21 @@ const handler = NextAuth({
 				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials, req) {
-				return {
-					id: credentials?.username ?? "id",
-					name: credentials?.username ?? "User name",
-					email: "Email@gmail.com",
-				};
+				try {
+					const response = await signInService({
+						username: credentials?.username || "",
+						password: credentials?.password || "",
+					});
+
+					return {
+						id: response.id.toString() || "1",
+						name: response.username ?? "User",
+						email: response.username ?? "User",
+					};
+				} catch (error) {
+					throw new Error("Invalid username or password");
+				}
 			},
-		}),
-		Google({
-			clientId: "YOUR_CLIENT_ID",
-			clientSecret: "YOUR_CLIENT_SECRET",
 		}),
 	],
 
