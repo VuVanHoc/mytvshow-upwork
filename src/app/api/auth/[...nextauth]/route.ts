@@ -56,8 +56,8 @@ const handler = NextAuth({
 		},
 		async session({ session, token }) {
 			// Add custom properties to the session object
-			// session.user.id = token.id;
-			return session;
+
+			return { ...session, id: token.id };
 		},
 	},
 	secret: "secret",

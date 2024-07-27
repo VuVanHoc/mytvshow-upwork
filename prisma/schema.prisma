@@ -21,8 +21,8 @@ model UserTvShow {
     userId   Int
     tvShowId Int
     label    LabelTvShow
-    rate     Int
-    favotite Boolean
+    rate     Decimal?
+    favorite Boolean?
 }
 
 enum LabelTvShow {

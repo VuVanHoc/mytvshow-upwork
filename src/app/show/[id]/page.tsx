@@ -1,12 +1,11 @@
 "use client";
 
+import AddToMyListButton from "@/components/ui/AddToMyListButton";
+import MarkFavoriteButton from "@/components/ui/MarkFavoriteButton";
+import RateButton from "@/components/ui/RateButton";
 import TvShowLabel from "@/components/ui/TvShowLabel";
-import { getTvShow } from "@/services/tv.service";
-import {
-	PlayCircleOutlined,
-	StarOutlined,
-	UnorderedListOutlined,
-} from "@ant-design/icons";
+import { getTvShow, getTvShowInMyList } from "@/services/tv.service";
+import { LineChartOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import { LabelTvShow } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -14,24 +13,31 @@ import {
 	Divider,
 	Empty,
 	Progress,
-	Rate,
 	Skeleton,
 	Tag,
 	Tooltip,
 	Typography,
 } from "antd";
+import useNotification from "antd/es/notification/useNotification";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 export default function DetailShowPage({ params }: { params: { id: string } }) {
 	const { id } = params;
-	const myRating = {
-		rate: 8,
-		label: LabelTvShow.HAVE_NOT_WATCHED,
-	};
+	const [notification, contextHolder] = useNotification();
+
 	const { data: session } = useSession();
 
+	const { data: tvshowInMyList, refetch: refretchTvShowInMyList } = useQuery({
+		queryKey: ["tvshowInMyList", session?.user],
+		queryFn: () =>
+			getTvShowInMyList({
+				userId: (session as any)?.id,
+				tvShowId: Number(id),
+			}),
+		enabled: !!session?.user,
+	});
 	const { data: tvshowDetail, isPending } = useQuery({
 		queryKey: ["tvshowDetail", id],
 		queryFn: () => getTvShow(id),
@@ -47,6 +53,15 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 			return "red";
 		}
 	};
+
+	const handleFavorite = () => {
+		if (!session?.user) {
+			notification.error({
+				message: "You need to login first",
+			});
+		}
+	};
+
 	if (isPending) {
 		return (
 			<section className="mx-auto mt-4 w-[980px]">
@@ -57,7 +72,8 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 	if (!tvshowDetail) return <Empty />;
 	return (
 		<section className="relative mx-auto mb-10 mt-4 w-[980px]">
-			<TvShowLabel label={myRating.label} />
+			{contextHolder}
+			<TvShowLabel label={tvshowInMyList?.label} />
 			<div className="flex gap-8">
 				<Image
 					src={`https://media.themoviedb.org/t/p/w300_and_h450_face${tvshowDetail.poster_path}`}
@@ -119,14 +135,18 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 								<p className="text-center">
 									<Progress
 										strokeColor={userScoreStrokeColor(
-											myRating.rate * 10,
+											(tvshowInMyList?.rate ?? 0) *
+												10 *
+												2,
 										)}
 										size={"small"}
 										type="circle"
 										percent={
-											Number(myRating.rate * 10).toFixed(
-												2,
-											) as any
+											Number(
+												(tvshowInMyList?.rate ?? 0) *
+													10 *
+													2,
+											).toFixed(2) as any
 										}
 									/>
 									<br />
@@ -136,30 +156,25 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 						)}
 					</div>
 					<div className="mt-4 flex gap-4">
-						<Tooltip
-							title="Add to My List"
-							arrow
-							placement="bottom"
-						>
-							<Button
-								size="large"
-								shape="circle"
-								type="primary"
-								icon={<UnorderedListOutlined />}
+						<AddToMyListButton
+							session={session}
+							tvshowDetail={tvshowDetail}
+						/>
+						<MarkFavoriteButton
+							refretchTvShowInMyList={refretchTvShowInMyList}
+							tvshowInMyList={tvshowInMyList}
+							session={session}
+							tvshowDetail={tvshowDetail}
+						/>
+
+						{session?.user && (
+							<RateButton
+								refretchTvShowInMyList={refretchTvShowInMyList}
+								tvshowInMyList={tvshowInMyList}
+								session={session}
+								tvshowDetail={tvshowDetail}
 							/>
-						</Tooltip>
-						<Tooltip
-							title="Mask as Favorite"
-							arrow
-							placement="bottom"
-						>
-							<Button
-								size="large"
-								shape="circle"
-								type="primary"
-								icon={<StarOutlined />}
-							/>
-						</Tooltip>
+						)}
 
 						<Button
 							size="large"
