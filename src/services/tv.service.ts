@@ -53,3 +53,18 @@ export const getTvShowInMyList = async ({
 	const data = await response.json();
 	return data;
 };
+
+export const fetchMyListTVShows = async (userId: number) => {
+	try {
+		const response = await fetch(`/api/getMyListTVShow?userId=${userId}`, {
+			method: "GET",
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch TV shows");
+		}
+
+		const data = await response.json();
+		return data;
+	} catch (error) {}
+};

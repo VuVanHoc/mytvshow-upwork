@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { LabelTvShow, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -12,30 +12,54 @@ export async function POST(req: Request) {
 				tvShowId,
 			},
 		});
-
-		if (!existed) {
-			return new Response(
-				JSON.stringify({ message: "Not found in My List" }),
-				{ status: 200 },
-			);
-		}
-		await prisma.userTvShow.update({
+		const user = await prisma.user.findFirst({
 			where: {
-				id: existed.id,
-			},
-			data: {
-				favorite,
-				label,
-				rate,
+				id: userId,
 			},
 		});
-		return new Response(
-			JSON.stringify({ message: "Updated successfully" }),
-			{
-				status: 200,
-			},
-		);
+		if (!existed) {
+			if (user) {
+				await prisma.userTvShow.create({
+					data: {
+						userId,
+						tvShowId,
+						favorite: favorite,
+						label: label || LabelTvShow.HAVE_NOT_WATCHED, // Ensure this label exists
+						rate: rate ?? 0,
+						user: {
+							connect: user,
+						},
+					},
+				});
+				return new Response(
+					JSON.stringify({ message: "Updated successfully" }),
+					{
+						status: 200,
+					},
+				);
+			}
+		} else {
+			await prisma.userTvShow.update({
+				where: {
+					id: existed.id,
+				},
+				data: {
+					favorite,
+					label,
+					rate,
+				},
+			});
+			return new Response(
+				JSON.stringify({ message: "Updated successfully" }),
+				{
+					status: 200,
+				},
+			);
+		}
 	} catch (error) {
+		console.log("====================================");
+		console.log(error);
+		console.log("====================================");
 		return new Response(
 			JSON.stringify({ error: "Failed to update My List" }),
 			{ status: 500 },

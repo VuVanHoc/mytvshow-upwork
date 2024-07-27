@@ -1,71 +1,41 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import Image from "next/image";
-import logo from "/public/logo.png";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyListTVShows } from "@/services/tv.service";
 import MyListTvShowItem from "@/components/ui/MyListTvShowItem";
-import { Divider, Typography } from "antd";
+import { Divider, Skeleton, Typography } from "antd";
 import { LabelTvShow } from "@prisma/client";
 import { ShareSocial } from "react-share-social";
 
-export default function MyListPage() {
-	const { data: session } = useSession();
-	const { data: shows } = useQuery({
+export default function ListTvShowOfUserById({
+	params,
+}: {
+	params: { userid: string };
+}) {
+	const { userid } = params;
+
+	const { data: shows, isPending } = useQuery({
 		queryKey: ["shows"],
-		queryFn: () => fetchMyListTVShows((session as any)?.id),
-		enabled: !!session?.user,
+		queryFn: () => fetchMyListTVShows(+userid),
+		enabled: !!userid,
 	});
-	if (!session?.user)
+	if (isPending) {
 		return (
-			<section className="mx-auto mb-10 mt-4 flex w-[980px] items-center">
-				<div>
-					<Image src={logo} alt="MyTVShow" width={100} height={100} />
-				</div>
-				<div>
-					Login or{" "}
-					<Link
-						className="font-bold text-blue-500 underline"
-						href={"/sign-up"}
-					>
-						Sign up
-					</Link>{" "}
-					a new account to save your favorite TV shows.
-					<br />
-					<p>
-						Easy to share your list with friends. <br />
-						Just one click!
-					</p>
-					<p className="mt-4 font-bold">Registered Users can:</p>
-					<ul className="ml-4">
-						<li>✅ Add shows to their library</li>
-						<li>✅ Mark episodes as seen/unseen</li>
-						<li>✅ Check for new episodes on the fly</li>
-						<li>✅ Rate your shows and episodes</li>
-						<li>
-							✅ Know how much time you spent watching your shows.
-						</li>
-					</ul>
-					<Link href={"/sign-up"}>
-						<button className="mt-8 border border-blue-600 bg-blue-500 px-4 py-2 text-2xl text-white">
-							Sign up now
-						</button>
-					</Link>
-				</div>
+			<section className="mx-auto mb-10 mt-4 w-[980px]">
+				<Skeleton active />
+				<br />
+				<br />
+				<Skeleton active />
+				<br />
+				<br />
+				<Skeleton active />
 			</section>
 		);
+	}
 	return (
 		<section className="mx-auto mb-10 mt-4 w-[980px]">
-			<div className="absolute right-0 top-20">
-				<ShareSocial
-					url={`${window.location.href}/${(session as any)?.id}`}
-					socialTypes={["facebook", "twitter", "reddit", "telegram"]}
-				/>
-			</div>
 			<h1 className="text-2xl">
-				My List TV Shows //{" "}
+				List TV Shows //{" "}
 				<span className="text-gray-600">
 					{shows?.length ?? 0} item(s)
 				</span>
