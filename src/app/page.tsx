@@ -4,6 +4,7 @@ import { getTvShows } from "@/services/tv.service";
 import { useQuery } from "@tanstack/react-query";
 import { Card, Pagination, Skeleton } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Home() {
@@ -76,29 +77,31 @@ export default function Home() {
 				<div className="mt-4 w-full border-b-[1px] border-gray-200"></div>
 				<div className="mt-10 grid grid-cols-4 gap-8">
 					{shows?.results?.length === 0 && <p>No results found</p>}
-					{shows?.results?.map((show: any) => (
-						<div key={show} className="group w-full cursor-pointer">
-							<Image
-								width={320}
-								height={180}
-								src={`https://media.themoviedb.org/t/p/w320_and_h180_face${show.poster_path}`}
-								alt={show.original_name}
-								className="aspect-video w-full rounded-t-lg"
-							></Image>
-							<div className="w-full items-center justify-center rounded-b-lg bg-slate-100 p-1 text-left group-hover:bg-[#7286A9] group-hover:text-white">
-								<p className="w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold">
-									{show.original_name}
-								</p>
-								<div className="mt-2 flex items-start justify-between text-xs">
-									<p>
-										Votes: {show.vote_count}
-										<br />
-										Average: {show.vote_average}
+					{shows?.results?.map((show: any, index: number) => (
+						<Link key={index} href={`/show/${show.id}`}>
+							<div className="group w-full cursor-pointer">
+								<Image
+									width={320}
+									height={180}
+									src={`https://media.themoviedb.org/t/p/w320_and_h180_face${show.poster_path}`}
+									alt={show.original_name}
+									className="aspect-video w-full rounded-t-lg"
+								></Image>
+								<div className="w-full items-center justify-center rounded-b-lg bg-slate-100 p-1 text-left group-hover:bg-[#7286A9] group-hover:text-white">
+									<p className="w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold">
+										{show.original_name}
 									</p>
-									<p>{show.first_air_date}</p>
+									<div className="mt-2 flex items-start justify-between text-xs">
+										<p>
+											Votes: {show.vote_count}
+											<br />
+											Average: {show.vote_average}
+										</p>
+										<p>{show.first_air_date}</p>
+									</div>
 								</div>
 							</div>
-						</div>
+						</Link>
 					))}
 				</div>
 				<div className="mb-8 mt-10 w-full border-b-[1px] border-gray-200"></div>

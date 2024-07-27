@@ -11,6 +11,7 @@
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
 	},
 	"dependencies": {
+		"@ant-design/icons": "^5.4.0",
 		"@ant-design/nextjs-registry": "^1.0.0",
 		"@prisma/client": "^5.17.0",
 		"@tanstack/react-query": "^5.51.3",

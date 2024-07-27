@@ -27,6 +27,16 @@ export default function MyListPage() {
 						Easy to share your list with friends. <br />
 						Just one click!
 					</p>
+					<p className="mt-4 font-bold">Registered Users can:</p>
+					<ul className="ml-4">
+						<li>✅ Add shows to their library</li>
+						<li>✅ Mark episodes as seen/unseen</li>
+						<li>✅ Check for new episodes on the fly</li>
+						<li>✅ Rate your shows and episodes</li>
+						<li>
+							✅ Know how much time you spent watching your shows.
+						</li>
+					</ul>
 					<Link href={"/sign-up"}>
 						<button className="mt-8 border border-blue-600 bg-blue-500 px-4 py-2 text-2xl text-white">
 							Sign up now

@@ -34,7 +34,7 @@ export default function Header() {
 	);
 	return (
 		<>
-			<header className="sticky top-0 h-20 w-full bg-[#222222]">
+			<header className="sticky top-0 z-10 h-20 w-full bg-[#222222]">
 				<div className="mx-auto flex h-full w-[980px] max-w-[980px] items-center justify-between">
 					<div>
 						<div className="flex items-center">
@@ -71,7 +71,7 @@ export default function Header() {
 			</header>
 			<div
 				className={cx(
-					"sticky top-20 h-10 w-full bg-[#7286A9]",
+					"sticky top-20 z-10 h-10 w-full bg-[#7286A9]",
 					pathname === "/my-list" && "bg-[#B04422]",
 				)}
 			></div>
