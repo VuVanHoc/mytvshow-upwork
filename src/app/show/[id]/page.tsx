@@ -5,8 +5,7 @@ import MarkFavoriteButton from "@/components/ui/MarkFavoriteButton";
 import RateButton from "@/components/ui/RateButton";
 import TvShowLabel from "@/components/ui/TvShowLabel";
 import { getTvShow, getTvShowInMyList } from "@/services/tv.service";
-import { LineChartOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { LabelTvShow } from "@prisma/client";
+import { PlayCircleOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
@@ -15,17 +14,14 @@ import {
 	Progress,
 	Skeleton,
 	Tag,
-	Tooltip,
 	Typography,
 } from "antd";
-import useNotification from "antd/es/notification/useNotification";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 export default function DetailShowPage({ params }: { params: { id: string } }) {
 	const { id } = params;
-	const [notification, contextHolder] = useNotification();
 
 	const { data: session } = useSession();
 
@@ -54,14 +50,6 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 		}
 	};
 
-	const handleFavorite = () => {
-		if (!session?.user) {
-			notification.error({
-				message: "You need to login first",
-			});
-		}
-	};
-
 	if (isPending) {
 		return (
 			<section className="mx-auto mt-4 w-[980px]">
@@ -72,7 +60,6 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 	if (!tvshowDetail) return <Empty />;
 	return (
 		<section className="relative mx-auto mb-10 mt-4 w-[980px]">
-			{contextHolder}
 			<TvShowLabel label={tvshowInMyList?.label} />
 			<div className="flex gap-8">
 				<Image

@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { ILoginResponse } from "@/types/user";
 
@@ -16,7 +17,7 @@ export const signInService = async ({
 	if (!user) {
 		return Promise.reject("User not found");
 	}
-	if (user.password !== password) {
+	if (!bcrypt.compareSync(password, user.password)) {
 		return Promise.reject("Wrong password");
 	}
 	return Promise.resolve({
@@ -24,4 +25,19 @@ export const signInService = async ({
 		id: user.id,
 		name: user.username,
 	});
+};
+
+export const fetchMyListTVShows = async () => {
+	try {
+		const response = await fetch(`/api/users`, {
+			method: "GET",
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to fetch users");
+		}
+
+		const data = await response.json();
+		return data;
+	} catch (error) {}
 };
