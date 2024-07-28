@@ -37,7 +37,7 @@ export default function Home() {
 			<section className="mx-auto mt-4 w-[980px]">
 				<div className="flex items-center justify-between">
 					<h1 className="text-2xl">
-						All Shows //{" "}
+						Discover All TV Shows //{" "}
 						<span className="text-gray-600">
 							{shows.total_results}
 						</span>
@@ -64,16 +64,6 @@ export default function Home() {
 						</button>
 					</div>
 				</div>
-				{/* <div className="mt-4 flex gap-4 uppercase text-[#7286A9]">
-					{characters.map((character) => (
-						<p
-							key={character}
-							className="cursor-pointer hover:font-bold"
-						>
-							{character}
-						</p>
-					))}
-				</div> */}
 				<div className="mt-4 w-full border-b-[1px] border-gray-200"></div>
 				<div className="mt-10 grid grid-cols-4 gap-8">
 					{shows?.results?.length === 0 && <p>No results found</p>}

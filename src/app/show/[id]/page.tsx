@@ -5,7 +5,7 @@ import MarkFavoriteButton from "@/components/ui/MarkFavoriteButton";
 import RateButton from "@/components/ui/RateButton";
 import TvShowLabel from "@/components/ui/TvShowLabel";
 import { getTvShow, getTvShowInMyList } from "@/services/tv.service";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { LinkOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
@@ -19,6 +19,7 @@ import {
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DetailShowPage({ params }: { params: { id: string } }) {
 	const { id } = params;
@@ -163,13 +164,15 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 							/>
 						)}
 
-						<Button
-							size="large"
-							type="default"
-							icon={<PlayCircleOutlined />}
-						>
-							Play Trailer
-						</Button>
+						<Link href={tvshowDetail.homepage} target="_blank">
+							<Button
+								size="large"
+								type="default"
+								icon={<LinkOutlined />}
+							>
+								Visit Website
+							</Button>
+						</Link>
 					</div>
 					<div className="mt-8">
 						<p className="italic opacity-70">

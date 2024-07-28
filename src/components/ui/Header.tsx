@@ -17,14 +17,13 @@ export default function Header() {
 				label: "TV SHOWS",
 			},
 			{
-				href: "/users",
-				label: "USERS",
-			},
-			{
 				href: "/stats",
 				label: "STATS",
 			},
-
+			{
+				href: "/users",
+				label: "USERS",
+			},
 			{
 				href: "/my-list",
 				label: "MY LIST",

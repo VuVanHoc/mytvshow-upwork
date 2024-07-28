@@ -14,6 +14,23 @@ export const getTvShows = async ({ page = 1, search = "" }) => {
 	return data;
 };
 
+// Get list TOP Rated Shows
+export const getTvShowsForStats = async ({ page = 1 }) => {
+	const response = await fetch(
+		`https://api.themoviedb.org/3/tv/top_rated?page=${page}`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				accept: "application/json",
+				Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_KEY}`,
+			},
+		},
+	);
+	const data = await response.json();
+	return data;
+};
+
 export const getTvShow = async (id: string) => {
 	const response = await fetch(
 		`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.NEXT_PUBLIC_TMDB_ACCESS_KEY}&language=en-US`,
