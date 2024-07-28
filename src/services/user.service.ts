@@ -1,6 +1,5 @@
 import prisma from "@/lib/prisma";
 import { ILoginResponse } from "@/types/user";
-import { User } from "@prisma/client";
 
 export const signInService = async ({
 	username,

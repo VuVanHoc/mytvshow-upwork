@@ -1,15 +1,7 @@
-import { LineChartOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
+import { LineChartOutlined } from "@ant-design/icons";
 import { LabelTvShow } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import {
-	Button,
-	Checkbox,
-	Modal,
-	notification,
-	Radio,
-	Rate,
-	Tooltip,
-} from "antd";
+import { Button, Modal, notification, Radio, Rate, Tooltip } from "antd";
 import { useState } from "react";
 
 interface Props {

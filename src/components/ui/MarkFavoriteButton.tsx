@@ -1,4 +1,4 @@
-import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { StarFilled } from "@ant-design/icons";
 import { LabelTvShow } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Button, notification, Tooltip } from "antd";

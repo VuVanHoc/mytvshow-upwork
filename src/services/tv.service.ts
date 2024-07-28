@@ -1,6 +1,3 @@
-import prisma from "@/lib/prisma";
-import { LabelTvShow } from "@prisma/client";
-
 export const getTvShows = async ({ page = 1, search = "" }) => {
 	const response = await fetch(
 		`https://api.themoviedb.org/3/discover/tv?page=${page}&with_keywords=${search}`,

@@ -5,7 +5,6 @@ import { fetchMyListTVShows } from "@/services/tv.service";
 import MyListTvShowItem from "@/components/ui/MyListTvShowItem";
 import { Divider, Skeleton, Typography } from "antd";
 import { LabelTvShow } from "@prisma/client";
-import { ShareSocial } from "react-share-social";
 
 export default function ListTvShowOfUserById({
 	params,

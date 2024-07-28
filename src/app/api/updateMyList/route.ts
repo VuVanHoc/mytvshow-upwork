@@ -57,9 +57,6 @@ export async function POST(req: Request) {
 			);
 		}
 	} catch (error) {
-		console.log("====================================");
-		console.log(error);
-		console.log("====================================");
 		return new Response(
 			JSON.stringify({ error: "Failed to update My List" }),
 			{ status: 500 },

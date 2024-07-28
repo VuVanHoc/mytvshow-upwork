@@ -21,7 +21,6 @@ export async function GET(req: Request) {
 
 		return new Response(JSON.stringify(tvShows), { status: 200 });
 	} catch (error) {
-		console.error(error);
 		return new Response(
 			JSON.stringify({ error: "Error while fetching TV shows" }),
 			{ status: 500 },
