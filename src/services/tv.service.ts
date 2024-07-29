@@ -82,3 +82,20 @@ export const fetchMyListTVShows = async (userId: number) => {
 		return data;
 	} catch (error) {}
 };
+
+export const getTrailerVideo = async (videoName: string) => {
+	// TODO: Update key param with your Google API key
+	const GOOGLE_API_KEY = "AIzaSyCHloYzysU1-KNAYh-wGdfc2fnuS_iKYko";
+	const response = await fetch(
+		`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${videoName}&type=video&key=${GOOGLE_API_KEY}`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				accept: "application/json",
+			},
+		},
+	);
+	const data = await response.json();
+	return data;
+};

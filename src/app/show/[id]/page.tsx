@@ -4,6 +4,7 @@ import AddToMyListButton from "@/components/ui/AddToMyListButton";
 import MarkFavoriteButton from "@/components/ui/MarkFavoriteButton";
 import RateButton from "@/components/ui/RateButton";
 import TvShowLabel from "@/components/ui/TvShowLabel";
+import WatchTrailerButton from "@/components/ui/WatchTrailerButton";
 import { getTvShow, getTvShowInMyList } from "@/services/tv.service";
 import { LinkOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -163,7 +164,9 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 								tvshowDetail={tvshowDetail}
 							/>
 						)}
-
+						<WatchTrailerButton
+							tvshowName={`${tvshowDetail.name} Trailer`}
+						/>
 						<Link href={tvshowDetail.homepage} target="_blank">
 							<Button
 								size="large"
