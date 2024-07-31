@@ -1,21 +1,37 @@
 "use client";
 
-import { getTvShowsForStats } from "@/services/tv.service";
+import { getListTVGenres, getTvShowsForStats } from "@/services/tv.service";
 import { useQuery } from "@tanstack/react-query";
-import { Divider, Pagination, Progress, Skeleton, Typography } from "antd";
+import {
+	Button,
+	DatePicker,
+	Divider,
+	Pagination,
+	Progress,
+	Skeleton,
+	Typography,
+} from "antd";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dayjs from "dayjs";
 import { userScoreStrokeColor } from "@/utils";
+import { ClearOutlined } from "@ant-design/icons";
 
 export default function StatsPage() {
-	const [getRequest, setRequest] = useState({
+	const [getRequest, setRequest] = useState<any>({
 		page: 1,
+		year: null,
+		genres: null,
 	});
 	const { data: shows, isPending } = useQuery({
 		queryKey: ["shows", getRequest],
 		queryFn: () => getTvShowsForStats(getRequest),
+	});
+
+	const { data: listGenres } = useQuery({
+		queryKey: ["listGenres"],
+		queryFn: () => getListTVGenres(),
 	});
 
 	if (isPending) {
@@ -30,6 +46,69 @@ export default function StatsPage() {
 			<h1 className="text-2xl">
 				Top Rated TV Shows //<span>{shows.total_results}</span>
 			</h1>
+			<div className="rounded border p-4">
+				<div className="flex items-center justify-between text-xl">
+					Filters{" "}
+					<Button
+						danger
+						icon={<ClearOutlined />}
+						onClick={() =>
+							setRequest({
+								page: 1,
+								year: null,
+								genres: null,
+							})
+						}
+					>
+						Clear filter
+					</Button>
+				</div>
+				<div className="flex flex-col gap-2">
+					<div>
+						<p>First Air Date</p>
+						<DatePicker
+							picker="year"
+							format="YYYY"
+							value={
+								dayjs(getRequest.year).isValid()
+									? dayjs(getRequest.year)
+									: null
+							}
+							onChange={(e) =>
+								setRequest({
+									...getRequest,
+									year: e,
+								})
+							}
+						/>
+					</div>
+				</div>
+				<div className="">
+					<p>Genres</p>
+					<div className="flex flex-wrap gap-2">
+						{listGenres?.genres?.map((genre: any) => (
+							<Button
+								shape="round"
+								value={genre.id}
+								key={genre.id}
+								type={
+									getRequest.genres === genre.id
+										? "primary"
+										: "default"
+								}
+								onClick={() =>
+									setRequest({
+										...getRequest,
+										genres: genre.id,
+									})
+								}
+							>
+								{genre.name}
+							</Button>
+						))}
+					</div>
+				</div>
+			</div>
 			<Divider />
 			<div className="grid grid-cols-1 gap-4">
 				{shows.results.map((show: any) => (

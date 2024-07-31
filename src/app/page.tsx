@@ -1,8 +1,18 @@
 "use client";
 
-import { getTvShows } from "@/services/tv.service";
+import { getListTVGenres, getTvShows } from "@/services/tv.service";
+import { ClearOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Pagination, Skeleton } from "antd";
+import {
+	Button,
+	Card,
+	Checkbox,
+	Collapse,
+	DatePicker,
+	Pagination,
+	Skeleton,
+} from "antd";
+import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,15 +20,21 @@ import { useState } from "react";
 export default function Home() {
 	// const characters = "abcdefghijklmnopqrstuvwxyz".split("");
 	const [searchQuery, setSearchQuery] = useState("");
-	const [getRequest, setRequest] = useState({
+	const [getRequest, setRequest] = useState<any>({
 		page: 1,
 		search: "",
+		year: null,
+		genres: null,
 	});
 	const { data: shows, isPending } = useQuery({
 		queryKey: ["shows", getRequest],
 		queryFn: () => getTvShows(getRequest),
 	});
 
+	const { data: listGenres } = useQuery({
+		queryKey: ["listGenres"],
+		queryFn: () => getListTVGenres(),
+	});
 	if (isPending) {
 		return (
 			<div className="mx-auto mt-4 grid w-[980px] grid-cols-4 gap-8">
@@ -35,33 +51,94 @@ export default function Home() {
 	return (
 		<main className="mb-10 pb-20">
 			<section className="mx-auto mt-4 w-[980px]">
-				<div className="flex items-center justify-between">
-					<h1 className="text-2xl">
-						Discover All TV Shows //{" "}
-						<span className="text-gray-600">
-							{shows.total_results}
-						</span>
-					</h1>
-					<div>
-						<input
-							className="border px-4"
-							type="text"
-							name="search"
-							placeholder="Search..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-						/>
-						<button
-							className="border border-blue-600 bg-blue-500 px-1 text-white"
+				<h1 className="text-2xl">
+					Discover All TV Shows //{" "}
+					<span className="text-gray-600">{shows.total_results}</span>
+				</h1>
+				<div className="rounded border p-4">
+					<div className="flex items-center justify-between text-xl">
+						Filters{" "}
+						<Button
+							danger
+							icon={<ClearOutlined />}
 							onClick={() =>
 								setRequest({
-									...getRequest,
-									search: searchQuery,
+									page: 1,
+									search: "",
+									year: null,
+									genres: null,
 								})
 							}
 						>
-							Search
-						</button>
+							Clear filter
+						</Button>
+					</div>
+					<div className="flex flex-col gap-2">
+						<div>
+							<p>First Air Date</p>
+							<DatePicker
+								picker="year"
+								format="YYYY"
+								value={
+									dayjs(getRequest.year).isValid()
+										? dayjs(getRequest.year)
+										: null
+								}
+								onChange={(e) =>
+									setRequest({
+										...getRequest,
+										year: e,
+									})
+								}
+							/>
+						</div>
+						<div>
+							<p>Keywords</p>
+							<input
+								className="border px-4"
+								type="text"
+								name="search"
+								placeholder="Search..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+							/>
+							<button
+								className="border border-blue-600 bg-blue-500 px-1 text-white"
+								onClick={() =>
+									setRequest({
+										...getRequest,
+										search: searchQuery,
+									})
+								}
+							>
+								Search
+							</button>
+						</div>
+					</div>
+					<div className="">
+						<p>Genres</p>
+						<div className="flex flex-wrap gap-2">
+							{listGenres?.genres?.map((genre: any) => (
+								<Button
+									shape="round"
+									value={genre.id}
+									key={genre.id}
+									type={
+										getRequest.genres === genre.id
+											? "primary"
+											: "default"
+									}
+									onClick={() =>
+										setRequest({
+											...getRequest,
+											genres: genre.id,
+										})
+									}
+								>
+									{genre.name}
+								</Button>
+							))}
+						</div>
 					</div>
 				</div>
 				<div className="mt-4 w-full border-b-[1px] border-gray-200"></div>

@@ -3,24 +3,15 @@
 import AddToMyListButton from "@/components/ui/AddToMyListButton";
 import MarkFavoriteButton from "@/components/ui/MarkFavoriteButton";
 import RateButton from "@/components/ui/RateButton";
+import Recommendations from "@/components/ui/Recommendations";
 import TvShowLabel from "@/components/ui/TvShowLabel";
 import WatchTrailerButton from "@/components/ui/WatchTrailerButton";
 import { getTvShow, getTvShowInMyList } from "@/services/tv.service";
-import { LinkOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import {
-	Button,
-	Divider,
-	Empty,
-	Progress,
-	Skeleton,
-	Tag,
-	Typography,
-} from "antd";
+import { Divider, Empty, Progress, Skeleton, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function DetailShowPage({ params }: { params: { id: string } }) {
 	const { id } = params;
@@ -167,15 +158,6 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 						<WatchTrailerButton
 							tvshowName={`${tvshowDetail.name} Trailer`}
 						/>
-						<Link href={tvshowDetail.homepage} target="_blank">
-							<Button
-								size="large"
-								type="default"
-								icon={<LinkOutlined />}
-							>
-								Visit Website
-							</Button>
-						</Link>
 					</div>
 					<div className="mt-8">
 						<p className="italic opacity-70">
@@ -300,6 +282,11 @@ export default function DetailShowPage({ params }: { params: { id: string } }) {
 						</div>
 					))}
 				</div>
+			</div>
+			<Divider />
+			<div>
+				<Typography.Title level={3}>Recommendations</Typography.Title>
+				<Recommendations id={tvshowDetail.id} />
 			</div>
 		</section>
 	);
