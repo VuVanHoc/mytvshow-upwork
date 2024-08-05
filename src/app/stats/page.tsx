@@ -1,6 +1,11 @@
 "use client";
 
-import { getListTVGenres, getTvShowsForStats } from "@/services/tv.service";
+import {
+	getListTVGenres,
+	getListTvShowOnAirToday,
+	getStatistics,
+	getTvShowsForStats,
+} from "@/services/tv.service";
 import { useQuery } from "@tanstack/react-query";
 import {
 	Button,
@@ -34,6 +39,26 @@ export default function StatsPage() {
 		queryFn: () => getListTVGenres(),
 	});
 
+	const { data: statistics } = useQuery({
+		queryKey: ["statistics"],
+		queryFn: () => getStatistics(),
+	});
+
+	const { data: listTVShowOnAirToday } = useQuery({
+		queryKey: ["listTVShowOnAirToday"],
+		queryFn: getListTvShowOnAirToday,
+	});
+
+	const { data: showsIn2024 } = useQuery({
+		queryKey: ["showsIn2024", getRequest],
+		queryFn: () =>
+			getTvShowsForStats({
+				page: 1,
+				year: "2024-01-01",
+				genres: null,
+			}),
+	});
+
 	if (isPending) {
 		return (
 			<div className="mx-auto mt-4 grid w-[980px] grid-cols-4 gap-8">
@@ -43,10 +68,59 @@ export default function StatsPage() {
 	}
 	return (
 		<section className="mx-auto mb-10 mt-4 w-[980px]">
-			<h1 className="text-2xl">
-				Top Rated TV Shows //<span>{shows.total_results}</span>
-			</h1>
+			<h1 className="text-2xl">Discover TV Shows By Top Rated</h1>
+
 			<div className="rounded border p-4">
+				<p className="text-xl">Statistics</p>
+
+				<div className="flex justify-between">
+					<div className="flex-1">
+						<p>
+							Total:{" "}
+							<span className="font-bold text-blue-500">
+								{statistics?.totalUsers}
+							</span>{" "}
+							users added
+						</p>
+						<ul className="ml-8 list-disc">
+							<li>
+								{statistics?.totalRecordsByLabel?.MUST_WATCH} TV
+								shows to MUST WATCH
+							</li>
+							<li>
+								{statistics?.totalRecordsByLabel?.WATCHED} TV
+								shows to WATCHED
+							</li>
+							<li>
+								{
+									statistics?.totalRecordsByLabel
+										?.HAVE_NOT_WATCHED
+								}{" "}
+								TV shows to HAVE NOT WATCHED
+							</li>
+						</ul>
+					</div>
+					<div className="flex-1">
+						<p>
+							Total:{" "}
+							<span className="font-bold text-blue-500">
+								{shows.total_results}
+							</span>{" "}
+							TV shows
+						</p>
+						<ul className="ml-8 list-disc">
+							<li>
+								{listTVShowOnAirToday?.total_results} New TV
+								Shows were added today
+							</li>
+							<li>
+								{showsIn2024?.total_results} TV shows were added
+								in 2024 so far
+							</li>
+						</ul>
+					</div>
+				</div>
+				<Divider />
 				<div className="flex items-center justify-between text-xl">
 					Filters{" "}
 					<Button
@@ -147,6 +221,7 @@ export default function StatsPage() {
 							<div className="mt-2 flex w-full gap-8">
 								<p className="text-center">
 									<Progress
+										format={(percent) => `${percent}%`}
 										strokeColor={userScoreStrokeColor(
 											show.vote_average * 10,
 										)}
@@ -155,7 +230,7 @@ export default function StatsPage() {
 										percent={
 											Number(
 												show.vote_average * 10,
-											).toFixed(2) as any
+											).toFixed(0) as any
 										}
 									/>
 									<br />

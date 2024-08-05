@@ -23,7 +23,7 @@ export const getTvShows = async ({
 
 // Get list TOP Rated Shows
 export const getTvShowsForStats = async ({ page = 1, year, genres }: any) => {
-	let url = `https://api.themoviedb.org/3/tv/top_rated?page=${page}`;
+	let url = `https://api.themoviedb.org/3/discover/tv?page=${page}&sort_by=vote_average.desc`;
 	if (year) url += `&first_air_date_year=${dayjs(year).get("year")}`;
 	if (genres) url += `&with_genres=${genres}`;
 	const response = await fetch(url, {
@@ -126,6 +126,34 @@ export const getRecommendations = async (id: number) => {
 export const getListTVGenres = async () => {
 	const response = await fetch(
 		`https://api.themoviedb.org/3/genre/tv/list?language=en`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				accept: "application/json",
+				Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_ACCESS_KEY}`,
+			},
+		},
+	);
+	const data = await response.json();
+	return data;
+};
+
+export const getStatistics = async () => {
+	const response = await fetch(`/api/statistics`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			accept: "application/json",
+		},
+	});
+	const data = await response.json();
+	return data;
+};
+
+export const getListTvShowOnAirToday = async () => {
+	const response = await fetch(
+		`https://api.themoviedb.org/3/tv/airing_today?language=en-US&page=1`,
 		{
 			method: "GET",
 			headers: {
