@@ -1,14 +1,18 @@
 "use client";
 
-import { getListTVGenres, getTvShows } from "@/services/tv.service";
+import {
+	getListKeywordsByQuery,
+	getListTVGenres,
+	getTvShows,
+} from "@/services/tv.service";
 import { ClearOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import {
+	AutoComplete,
 	Button,
 	Card,
-	Checkbox,
-	Collapse,
 	DatePicker,
+	Input,
 	Pagination,
 	Skeleton,
 } from "antd";
@@ -35,6 +39,14 @@ export default function Home() {
 		queryKey: ["listGenres"],
 		queryFn: () => getListTVGenres(),
 	});
+
+	// Use react-query's useQuery with the debounced function
+	const { data: keywords } = useQuery({
+		queryKey: ["keywords", searchQuery],
+		queryFn: () => getListKeywordsByQuery(searchQuery),
+		enabled: !!searchQuery, // Ensure query runs only when searchQuery is truthy
+	});
+
 	if (isPending) {
 		return (
 			<div className="mx-auto mt-4 grid w-[980px] grid-cols-4 gap-8">
@@ -61,14 +73,15 @@ export default function Home() {
 						<Button
 							danger
 							icon={<ClearOutlined />}
-							onClick={() =>
+							onClick={() => {
 								setRequest({
 									page: 1,
 									search: "",
 									year: null,
 									genres: null,
-								})
-							}
+								});
+								setSearchQuery("");
+							}}
 						>
 							Clear filter
 						</Button>
@@ -94,25 +107,55 @@ export default function Home() {
 						</div>
 						<div>
 							<p>Keywords</p>
-							<input
-								className="border px-4"
-								type="text"
-								name="search"
-								placeholder="Search..."
+							<AutoComplete
+								options={[
+									...(keywords?.results?.map((k: any) => ({
+										label: k.name,
+										value: k.name,
+									})) || []),
+								]}
+								popupMatchSelectWidth={252}
+								style={{ width: 300 }}
 								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-							/>
-							<button
-								className="border border-blue-600 bg-blue-500 px-1 text-white"
-								onClick={() =>
-									setRequest({
-										...getRequest,
-										search: searchQuery,
-									})
-								}
+								onChange={(e) => setSearchQuery(e)}
 							>
-								Search
-							</button>
+								<Input.Search
+									placeholder="Enter keywords..."
+									enterButton
+									onSearch={() =>
+										setRequest({
+											...getRequest,
+											search:
+												keywords?.results?.find(
+													(e: any) =>
+														e.name === searchQuery,
+												)?.id || searchQuery,
+										})
+									}
+								/>
+
+								{/* <input
+									className="border px-4"
+									type="text"
+									name="search"
+									placeholder="Search..."
+									value={searchQuery}
+									onChange={(e) =>
+										setSearchQuery(e.target.value)
+									}
+								/>
+								<button
+									className="border border-blue-600 bg-blue-500 px-1 text-white"
+									onClick={() =>
+										setRequest({
+											...getRequest,
+											search: searchQuery,
+										})
+									}
+								>
+									Search
+								</button> */}
+							</AutoComplete>
 						</div>
 					</div>
 					<div className="">

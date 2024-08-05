@@ -71,51 +71,52 @@ export default function StatsPage() {
 			<h1 className="text-2xl">Discover TV Shows By Top Rated</h1>
 
 			<div className="rounded border p-4">
-				<p className="text-xl">Statistics</p>
-
 				<div className="flex justify-between">
 					<div className="flex-1">
-						<p>
-							Total:{" "}
-							<span className="font-bold text-blue-500">
-								{statistics?.totalUsers}
-							</span>{" "}
-							users added
-						</p>
+						<p className="text-xl">TV Shows Stats</p>
 						<ul className="ml-8 list-disc">
 							<li>
-								{statistics?.totalRecordsByLabel?.MUST_WATCH} TV
-								shows to MUST WATCH
+								Total:{" "}
+								<span className="font-bold text-blue-500">
+									{shows.total_results}
+								</span>{" "}
+								TV shows
 							</li>
-							<li>
-								{statistics?.totalRecordsByLabel?.WATCHED} TV
-								shows to WATCHED
-							</li>
-							<li>
-								{
-									statistics?.totalRecordsByLabel
-										?.HAVE_NOT_WATCHED
-								}{" "}
-								TV shows to HAVE NOT WATCHED
-							</li>
-						</ul>
-					</div>
-					<div className="flex-1">
-						<p>
-							Total:{" "}
-							<span className="font-bold text-blue-500">
-								{shows.total_results}
-							</span>{" "}
-							TV shows
-						</p>
-						<ul className="ml-8 list-disc">
 							<li>
 								{listTVShowOnAirToday?.total_results} New TV
 								Shows were added today
 							</li>
 							<li>
 								{showsIn2024?.total_results} TV shows were added
-								in 2024 so far
+								in 2024
+							</li>
+						</ul>
+					</div>
+					<div className="flex-1">
+						<p className="text-xl">MyTVShows Stats</p>
+
+						<ul className="ml-8 list-disc">
+							<li>
+								Total:{" "}
+								<span className="font-bold text-blue-500">
+									{statistics?.totalUsers}
+								</span>{" "}
+								active users.
+							</li>
+							<li>
+								{statistics?.totalRecordsByLabel?.MUST_WATCH}{" "}
+								{`shows added to "Must watch"`}
+							</li>
+							<li>
+								{statistics?.totalRecordsByLabel?.WATCHED} TV
+								{`shows added to "Watched"`}
+							</li>
+							<li>
+								{
+									statistics?.totalRecordsByLabel
+										?.HAVE_NOT_WATCHED
+								}{" "}
+								{`shows added to "Haven't watched"`}
 							</li>
 						</ul>
 					</div>
