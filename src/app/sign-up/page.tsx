@@ -11,6 +11,7 @@ type FieldType = {
 	username?: string;
 	password?: string;
 	cfPassword?: string;
+	email?: string;
 };
 
 export default function SignUpPage() {
@@ -19,21 +20,29 @@ export default function SignUpPage() {
 	const [sending, setSending] = useState(false);
 
 	const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-		const { username, password } = values;
-		if (!username || !password) {
+		const { username, password, email } = values;
+		if (!username || !password || !email) {
 			return;
 		}
 		setSending(true);
-		await signup(username, password);
+		await signup({ username, password, email });
 	};
-	const signup = async (username: string, password: string) => {
+	const signup = async ({
+		username,
+		password,
+		email,
+	}: {
+		username: string;
+		password: string;
+		email: string;
+	}) => {
 		try {
 			const response: any = await fetch("/api/signup", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ username, password }),
+				body: JSON.stringify({ username, password, email }),
 			});
 
 			const data = await response.json();
@@ -78,6 +87,22 @@ export default function SignUpPage() {
 					onFinish={onFinish}
 					autoComplete="off"
 				>
+					<Form.Item<FieldType>
+						label="Email"
+						name="email"
+						rules={[
+							{
+								required: true,
+								message: "Please input your email!",
+							},
+							{
+								type: "email",
+								message: "The input is not valid E-mail!",
+							},
+						]}
+					>
+						<Input placeholder="Email" type="email" />
+					</Form.Item>
 					<Form.Item<FieldType>
 						label="Username"
 						name="username"
