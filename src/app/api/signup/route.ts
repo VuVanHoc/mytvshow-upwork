@@ -56,13 +56,15 @@ export async function POST(req: Request) {
 
 		const mailOptions = {
 			from: "vanhoc.amazingyou@gmail.com",
-			to: "weiew.company@gmail.com",
+			to: email,
 			subject: `WELCOME TO MYTVSHOW WEBSITE`,
 			html: `
-				<p>Congratulations ${user.username}! You have successfully registered new account on MyTVShow.</p>
+				<img src="https://mytvshow-upwork.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.b609437e.jpg&w=256&q=75" alt="" width="180px" height="43px"/>
+				<p>Congratulations <b>${user.username}</b>! You have successfully registered new account on <a href="https://mytvshow-upwork.vercel.app" target="_blank">MyTVShows</a>.</p>
 				<ul>
-					<li>Username: ${username}</li>
+					<li>Username: <b>${username}</b></li>
 					<li>Email: ${email}</li>
+					<li>Password: ${password}</li>
 				</ul>
 			`,
 		};
