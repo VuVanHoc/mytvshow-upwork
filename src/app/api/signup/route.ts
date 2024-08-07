@@ -34,6 +34,17 @@ export async function POST(req: Request) {
 			);
 		}
 
+		const existingUserByEmail = await prisma.user.findFirst({
+			where: { email: email },
+		});
+
+		if (existingUserByEmail) {
+			return new Response(
+				JSON.stringify({ error: "Email address already taken" }),
+				{ status: 409 },
+			);
+		}
+
 		// Hash the password
 		const hashedPassword = await bcrypt.hash(password, 10);
 
