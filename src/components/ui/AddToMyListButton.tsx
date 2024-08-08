@@ -26,9 +26,9 @@ const AddToMyListButton: React.FC<Props> = ({ session, tvshowDetail }) => {
 
 	const mutateAddToMyList = useMutation({
 		mutationFn: addTvShow,
-		onSuccess: () => {
+		onSuccess: (res) => {
 			notification.success({
-				message: "Added to My List successfully",
+				message: res?.message,
 			});
 		},
 		onError: () => {
@@ -56,7 +56,7 @@ const AddToMyListButton: React.FC<Props> = ({ session, tvshowDetail }) => {
 		try {
 			await mutateAddToMyList.mutateAsync({
 				tvShowId: tvshowDetail.id,
-				userId: session.user.id,
+				userId: Number(session.id),
 			});
 		} catch (error) {}
 	};

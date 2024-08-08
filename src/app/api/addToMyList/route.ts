@@ -5,6 +5,12 @@ const prisma = new PrismaClient();
 export async function POST(req: Request) {
 	const { userId, tvShowId } = await req.json();
 
+	if (!userId || !tvShowId) {
+		return new Response(
+			JSON.stringify({ message: "userId and tvShowId are required" }),
+			{ status: 400 },
+		);
+	}
 	try {
 		const existed = await prisma.userTvShow.findFirst({
 			where: {
@@ -22,7 +28,6 @@ export async function POST(req: Request) {
 			if (user) {
 				await prisma.userTvShow.create({
 					data: {
-						userId,
 						tvShowId,
 						favorite: false,
 						label: LabelTvShow.HAVE_NOT_WATCHED, // Ensure this label exists
